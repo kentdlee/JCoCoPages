@@ -1,0 +1,1240 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>The JCoCo Virtual Machine &#8212; The JCoCo Virtual Machine 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="#">The JCoCo Virtual Machine 1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-jcoco-virtual-machine">
+<h1>The JCoCo Virtual Machine<a class="headerlink" href="#the-jcoco-virtual-machine" title="Permalink to this headline">¶</a></h1>
+<p>JCoCo is a virtual machine, based on the Python 3.2 virtual machine. The JCoCo virtual machine reads and executes assembly language. Learning this assembly language is made relatively easy by writing Python programs and disassembling them. JCoCo is a stack-based virtual machine. Each instruction gets is operands from an operand stack and leaves its results on the operand stack.</p>
+<p>[This virtual machine was implemented in Java. Another version of this project called just CoCo, was written in C++. You can find documentation on the C++ version at <a class="reference external" href="http://cs.luther.edu/CoCo">http://cs.luther.edu/CoCo</a>. JCoCo is backwards compatible with CoCo.]</p>
+<p>JCoCo was designed for educational purposes for learning Java, assembly language, and higher level language implementation. However, JCoCo is a full-fleged virtual machine supporting function definition, higher order functional programming, classes, object instantiation, inheritance, and polymporphism. Source code for a reduced functionality JCoCo is available on GitHub free of charge. You may download it by cloning the github repository or by downloading a zip file of the source. A full implementation jar file is available in the next section.</p>
+</div>
+<div class="section" id="download">
+<h1>Download<a class="headerlink" href="#download" title="Permalink to this headline">¶</a></h1>
+<p>You can be up and running the JCoCo virtual machine in minutes. Download <a class="reference download internal" href="_downloads/jcoco.zip" download=""><code class="xref download docutils literal notranslate"><span class="pre">the</span> <span class="pre">JCoCo</span> <span class="pre">zip</span> <span class="pre">file</span></code></a> and unzip it in your bin directory or some place in your path. That’s it. You should then be able to run coco by typing <em>coco</em> at a command prompt. You must have Java installed to run this program, but most systems do have Java these days. If yours does not, you can <a class="reference external" href="https://www.java.com/">download Java here</a>.</p>
+<p>You may also want the Python disassembler. This will let you disassemble many Python programs to the assembly language format needed by the JCoCo virtual machine. You can <a class="reference download internal" href="_downloads/disassembler.py" download=""><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">the</span> <span class="pre">disassembler</span> <span class="pre">by</span> <span class="pre">clicking</span> <span class="pre">here</span></code></a>. You must have Python 3.2 installed on your system to run this disassembler. You can determine if you have Python 3.2 by opening up a terminal windows and typing <em>python3.2</em>. If the program is installed, and it is in your path, it should run. If not, you can download the appropriate file below and install it on your system.</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference download internal" href="_downloads/python-3.2.5-macosx10.3.dmg" download=""><code class="xref download docutils literal notranslate"><span class="pre">python-3.2.5-macosx10.3.dmg</span></code></a> - For Mac OS X 10.3 and later.</li>
+<li><a class="reference download internal" href="_downloads/python-3.2.5-macosx10.6.dmg" download=""><code class="xref download docutils literal notranslate"><span class="pre">python-3.2.5-macosx10.6.dmg</span></code></a> - For Mac OS X 10.6 and later.</li>
+<li><a class="reference download internal" href="_downloads/python-3.2.5.amd64.msi" download=""><code class="xref download docutils literal notranslate"><span class="pre">python-3.2.5.amd64.msi</span></code></a> - For 64-bit Microsoft Windows.</li>
+<li><a class="reference download internal" href="_downloads/python-3.2.5.msi" download=""><code class="xref download docutils literal notranslate"><span class="pre">python-3.2.5.msi</span></code></a> - For 32-bit Microsoft Windows.</li>
+<li><a class="reference download internal" href="_downloads/Python-3.2.6.tgz" download=""><code class="xref download docutils literal notranslate"><span class="pre">Python-3.2.6.tgz</span></code></a> - Source code which can be compiled and used to install Python 3.2 if you have a C compiler.</li>
+</ul>
+</div></blockquote>
+<p>Read below for how to use the disassembler and for what it can and cannot do.</p>
+</div>
+<div class="section" id="overview-of-the-virtual-machine">
+<h1>Overview of the Virtual Machine<a class="headerlink" href="#overview-of-the-virtual-machine" title="Permalink to this headline">¶</a></h1>
+<p>JCoCo, like Python, is a virtual machine (i.e. an interpreter) for bytecode instructions. JCoCo is written in Java using object-oriented principles and does not store its instructions in actual bytecode format. Instead, it reads an assembly language file and builds an internal representation of the program as a sequence of functions and classes, each with their own sequence of ByteCode objects.</p>
+<div class="figboxright docutils container">
+<div class="figure">
+<img alt="_images/coco.png" src="_images/coco.png" />
+</div>
+</div>
+<p>Each function of a JCoCo program, when called, results in a new stack frame object being created. A stack frame contains all local variables that are defined in the function. Each stack frame also contains two stacks, an operand stack and a block stack.</p>
+<p>The operand stack is used by the virtual machine to store all intermediate results of instruction execution. Operands are popped from the operand stack when an instruction is executed possibly leaving its result on the operand stack for use by a subsequent instruction. This style of computation has been in use a long time, from Hewlett Packard mainframe computers of the 1960’s through the 1980’s to calculators made by Hewlett Packard still today. The Java virtual machine is a stack machine as is the Python virtual machine.</p>
+<p>The other stack in a frame is a block stack. The block stack keeps track of exit points for blocks of code within a JCoCo program. When a loop is entered, the exit point of the loop is pushed onto the block stack. In this way, if a break instruction is executed inside a loop, the exit point of the loop can be found and the execution of the break instruction will jump to that address. Exception handlers also push the address of the handler onto the block stack. If an exception occurs, execution jumps to the exception handler by popping the address from the block stack. When a loop or try block is exited, the corresponding block stack address is popped from the block stack.</p>
+<p>A program counter (abbreviated PC) is responsible for holding the address of the next instruction to be executed. The machine proceeds by fetching an instruction from the code, incrementing the PC, and executing the fetched instruction. Execution proceeds this way until a RETURN_VALUE instruction is executed or an exception occurs.</p>
+<p>When an exception occurs, if no matching exception handler is found, execution of the function terminates and control is returned to the previously called function where the exception continues to propagate back until a matching exception handler is found. If no matching handler is found, the complete traceback of the exception is printed.</p>
+<p>If no exception occurs during the running of a program, execution terminates when the main function executes the RETURN_VALUE instruction.</p>
+</div>
+<div class="section" id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<p>JCoCo is a full-fledged virtual machine. It reads a source file in JCoCo assembly format and interprets the instructions. JCoCo is a interpreter for Python assembly language instructions. In addition, included with JCoCo is a Python disassembler that diassembles Python programs into JCoCo format. With these two tools together you can learn a lot about not only the syntax of casm files (the extension understood as CoCo assembly language) but also the Python language itself. Two examples below describe the usage of JCoCo and the associated disassembler.</p>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>Consider the following Python program. The disassembler is a module found in the tests subdirectory of the source code distribution or you can <a class="reference download internal" href="_downloads/disassembler.py" download=""><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">it</span> <span class="pre">here</span></code></a>. To disassemble correctly, Python programs must contain a series of functions including a main function. The disassembler is imported at the top. Instead of calling the main function, the disassemble function of the same module is called on each function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">disassembler</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">5</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">y</span><span class="o">+</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="n">disassembler</span><span class="o">.</span><span class="n">disassemble</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To run the disassembler you must use Python 3.2 as follows.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Kent&#39;s Mac&gt; python3.2 test1.py
+</pre></div>
+</div>
+<p>where <em>test1.py</em> is the name of this program. Calling the disassembler on the main function in the example program <em>test1.py</em> produces this output to the screen.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Function</span><span class="p">:</span> <span class="n">main</span><span class="o">/</span><span class="mi">0</span>
+<span class="n">Constants</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="mi">5</span>
+<span class="n">Locals</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+<span class="n">Globals</span><span class="p">:</span> <span class="k">print</span>
+<span class="n">BEGIN</span>
+          <span class="n">LOAD_CONST</span>                     <span class="mi">1</span>
+          <span class="n">STORE_FAST</span>                     <span class="mi">0</span>
+          <span class="n">LOAD_FAST</span>                      <span class="mi">0</span>
+          <span class="n">LOAD_CONST</span>                     <span class="mi">1</span>
+          <span class="n">BINARY_ADD</span>
+          <span class="n">STORE_FAST</span>                     <span class="mi">1</span>
+          <span class="n">LOAD_GLOBAL</span>                    <span class="mi">0</span>
+          <span class="n">LOAD_FAST</span>                      <span class="mi">1</span>
+          <span class="n">LOAD_CONST</span>                     <span class="mi">1</span>
+          <span class="n">BINARY_ADD</span>
+          <span class="n">CALL_FUNCTION</span>                  <span class="mi">1</span>
+          <span class="n">POP_TOP</span>
+          <span class="n">LOAD_CONST</span>                     <span class="mi">0</span>
+          <span class="n">RETURN_VALUE</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>If you wish to save this to a file to execute with JCoCo you can do the following.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Kent<span class="s1">&#39;s Mac&gt; python3.2 test1.py &gt; test1.casm</span>
+<span class="s1">Kent&#39;</span>s Mac&gt; coco test.casm
+<span class="m">15</span>
+</pre></div>
+</div>
+<p>In the <em>test1.py</em> program there is one function called main. The assembly indicates main has 0 formal parameters. Constants that are used in the code include None and 5. There are two local variables in the function: x and y. The global print function is called and so is in the list of globals. Every function in CoCo has at least these categories of identifiers and values within each defined function. Sometimes one or more of these categories may be empty and can be omitted in that case.</p>
+<p>The instructions of the code follow the begin keyword and preceed the end keyword. LOAD_CONST 1 means to load the constant value at index 1 (zero based) of the constants onto the operand stack. CoCo is a stack machine and therefore all operations are performed with operands pushed and popped from the operand stack.</p>
+<p>The STORE_FAST instruction stores a value in the locals list, in this case at offset 0, the location of x. LOAD_FAST does the opposite, pushing a value on the operand stack from the locals list of variables. BINARY_ADD pops two elements from the stack and adds them together, pushing the result. CALL_FUNCTION pops the number of arguments specified in the instruction (1 in this case) and then pops the function from the stack. Finally, it calls the popped function with the popped arguments. The result of the function call is left on the top of the operand stack. In the case of the print function, None is returned and left on the stack. The POP_TOP instruction pops the None from the stack and discards it only to have the <em>main</em> function push a None on the stack just before returning. RETURN_VALUE pops the top argument from the operand stack and returns that value to the calling function.</p>
+<p>To run this code, make sure that you have the <em>coco</em> executable in your path some place. Then you can execute the following code to try this example.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> tests
+
+python3.2 test1.py &gt; test1.casm
+
+coco test1.casm
+</pre></div>
+</div>
+</div>
+<div class="section" id="a-more-complex-example">
+<h2>A More Complex Example<a class="headerlink" href="#a-more-complex-example" title="Permalink to this headline">¶</a></h2>
+<p>JCoCo is capable of handling complex functions that may be nested inside one another. It can handle functions that return functions and functions that take other functions as parameters. Consider the following Python program.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># If 1 2 3 4 is entered, and 5 for the second prompt</span>
+<span class="c1"># then the answer should be [6, 13, 20, 27]</span>
+<span class="kn">from</span> <span class="nn">disassembler</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">g</span><span class="p">(</span><span class="n">aVal</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">aVal</span> <span class="o">+</span> <span class="n">lstInts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span>
+
+        <span class="k">return</span> <span class="n">f</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Please enter a list of integers: &quot;</span><span class="p">)</span>
+    <span class="n">lst</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+    <span class="n">lstInts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">lst</span><span class="p">:</span>
+        <span class="n">lstInts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+
+    <span class="n">myFun</span> <span class="o">=</span> <span class="n">g</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="n">myFun</span><span class="p">(</span><span class="n">lstInts</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+
+<span class="c1">#main()</span>
+<span class="n">disassemble</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Calling disassemble on main will disassemble any nested functions as well, so it is only necessary to call disassemble on all top-level functions. You can read the code above and the comments to understand how this program works. The disassembled code appears below.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Function</span><span class="p">:</span> <span class="n">main</span><span class="o">/</span><span class="mi">0</span>
+    <span class="n">Function</span><span class="p">:</span> <span class="n">g</span><span class="o">/</span><span class="mi">1</span>
+        <span class="n">Function</span><span class="p">:</span> <span class="n">f</span><span class="o">/</span><span class="mi">1</span>
+        <span class="n">Constants</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="n">Locals</span><span class="p">:</span> <span class="n">x</span>
+        <span class="n">FreeVars</span><span class="p">:</span> <span class="n">aVal</span><span class="p">,</span> <span class="n">lstInts</span>
+        <span class="n">BEGIN</span>
+                  <span class="n">LOAD_DEREF</span>                     <span class="mi">0</span>
+                  <span class="n">LOAD_DEREF</span>                     <span class="mi">1</span>
+                  <span class="n">LOAD_CONST</span>                     <span class="mi">1</span>
+                  <span class="n">BINARY_SUBSCR</span>
+                  <span class="n">BINARY_ADD</span>
+                  <span class="n">LOAD_FAST</span>                      <span class="mi">0</span>
+                  <span class="n">BINARY_ADD</span>
+                  <span class="n">RETURN_VALUE</span>
+        <span class="n">END</span>
+    <span class="n">Constants</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="n">code</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">Locals</span><span class="p">:</span> <span class="n">aVal</span><span class="p">,</span> <span class="n">f</span>
+    <span class="n">FreeVars</span><span class="p">:</span> <span class="n">lstInts</span>
+    <span class="n">CellVars</span><span class="p">:</span> <span class="n">aVal</span>
+    <span class="n">BEGIN</span>
+              <span class="n">LOAD_CLOSURE</span>                   <span class="mi">0</span>
+              <span class="n">LOAD_CLOSURE</span>                   <span class="mi">1</span>
+              <span class="n">BUILD_TUPLE</span>                    <span class="mi">2</span>
+              <span class="n">LOAD_CONST</span>                     <span class="mi">1</span>
+              <span class="n">MAKE_CLOSURE</span>                   <span class="mi">0</span>
+              <span class="n">STORE_FAST</span>                     <span class="mi">1</span>
+              <span class="n">LOAD_FAST</span>                      <span class="mi">1</span>
+              <span class="n">RETURN_VALUE</span>
+    <span class="n">END</span>
+<span class="n">Constants</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="n">code</span><span class="p">(</span><span class="n">g</span><span class="p">),</span> <span class="s2">&quot;Please enter a list of integers: &quot;</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span>
+<span class="n">Locals</span><span class="p">:</span> <span class="n">g</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">lst</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">myFun</span>
+<span class="n">CellVars</span><span class="p">:</span> <span class="n">lstInts</span>
+<span class="n">Globals</span><span class="p">:</span> <span class="nb">input</span><span class="p">,</span> <span class="n">split</span><span class="p">,</span> <span class="n">append</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="k">print</span>
+<span class="n">BEGIN</span>
+          <span class="n">LOAD_CLOSURE</span>                   <span class="mi">0</span>
+          <span class="n">BUILD_TUPLE</span>                    <span class="mi">1</span>
+          <span class="n">LOAD_CONST</span>                     <span class="mi">1</span>
+          <span class="n">MAKE_CLOSURE</span>                   <span class="mi">0</span>
+          <span class="n">STORE_FAST</span>                     <span class="mi">0</span>
+          <span class="n">LOAD_GLOBAL</span>                    <span class="mi">0</span>
+          <span class="n">LOAD_CONST</span>                     <span class="mi">2</span>
+          <span class="n">CALL_FUNCTION</span>                  <span class="mi">1</span>
+          <span class="n">STORE_FAST</span>                     <span class="mi">1</span>
+          <span class="n">LOAD_FAST</span>                      <span class="mi">1</span>
+          <span class="n">LOAD_ATTR</span>                      <span class="mi">1</span>
+          <span class="n">CALL_FUNCTION</span>                  <span class="mi">0</span>
+          <span class="n">STORE_FAST</span>                     <span class="mi">2</span>
+          <span class="n">BUILD_LIST</span>                     <span class="mi">0</span>
+          <span class="n">STORE_DEREF</span>                    <span class="mi">0</span>
+          <span class="n">SETUP_LOOP</span>               <span class="n">label02</span>
+          <span class="n">LOAD_FAST</span>                      <span class="mi">2</span>
+          <span class="n">GET_ITER</span>
+<span class="n">label00</span><span class="p">:</span>  <span class="n">FOR_ITER</span>                 <span class="n">label01</span>
+          <span class="n">STORE_FAST</span>                     <span class="mi">3</span>
+          <span class="n">LOAD_DEREF</span>                     <span class="mi">0</span>
+          <span class="n">LOAD_ATTR</span>                      <span class="mi">2</span>
+          <span class="n">LOAD_GLOBAL</span>                    <span class="mi">3</span>
+          <span class="n">LOAD_FAST</span>                      <span class="mi">3</span>
+          <span class="n">CALL_FUNCTION</span>                  <span class="mi">1</span>
+          <span class="n">CALL_FUNCTION</span>                  <span class="mi">1</span>
+          <span class="n">POP_TOP</span>
+          <span class="n">JUMP_ABSOLUTE</span>            <span class="n">label00</span>
+<span class="n">label01</span><span class="p">:</span>  <span class="n">POP_BLOCK</span>
+<span class="n">label02</span><span class="p">:</span>  <span class="n">LOAD_FAST</span>                      <span class="mi">0</span>
+          <span class="n">LOAD_CONST</span>                     <span class="mi">3</span>
+          <span class="n">CALL_FUNCTION</span>                  <span class="mi">1</span>
+          <span class="n">STORE_FAST</span>                     <span class="mi">4</span>
+          <span class="n">LOAD_GLOBAL</span>                    <span class="mi">4</span>
+          <span class="n">LOAD_FAST</span>                      <span class="mi">4</span>
+          <span class="n">LOAD_DEREF</span>                     <span class="mi">0</span>
+          <span class="n">LOAD_CONST</span>                     <span class="mi">4</span>
+          <span class="n">BINARY_SUBSCR</span>
+          <span class="n">CALL_FUNCTION</span>                  <span class="mi">1</span>
+          <span class="n">CALL_FUNCTION</span>                  <span class="mi">1</span>
+          <span class="n">POP_TOP</span>
+          <span class="n">LOAD_CONST</span>                     <span class="mi">0</span>
+          <span class="n">RETURN_VALUE</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>From the code above you can observe several things that are worth a little more explanation.</p>
+<blockquote>
+<div><ul class="simple">
+<li>A nested function appears right after the outer function’s Function: declaration line.</li>
+<li>FreeVars is another category of variables in a function. FreeVars are variables that are referenced in the function, but not defined within the function. Instead, they are referenced from the enclosing function’s scope.</li>
+<li>CellVars are yet another category of variable. A cellvar is a variable that is local to the function, but is referenced by some other function and therefore must be stored with an indirect reference so it can be referenced in both function.</li>
+<li>The code(g) and code(f) represent the code of function g and the code of function f respectively. The code of a nested function is a constant to the outer function.</li>
+<li>Labels are used to symbolically indicate the targets of jumps and other branching instructions.</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="example-of-classes-and-inheritance">
+<h2>Example of Classes and Inheritance<a class="headerlink" href="#example-of-classes-and-inheritance" title="Permalink to this headline">¶</a></h2>
+<p>A third example illustrates the definition of classes in JCoCo including the use of inheritance and inner classes. Consider the following Python program.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">disassembler</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="k">class</span> <span class="nc">Base</span><span class="p">:</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">z</span>
+                <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Base __init__&quot;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">A</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
+                <span class="n">u</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span>
+                <span class="k">print</span><span class="p">(</span><span class="nb">super</span><span class="p">)</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+                <span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
+                <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span>
+
+        <span class="k">def</span> <span class="nf">getX</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+
+        <span class="k">def</span> <span class="nf">slope</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+
+        <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">return</span> <span class="s2">&quot;This is an A object&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="mi">6</span> <span class="c1"># must be before class definition to</span>
+              <span class="c1"># reference in class B. The closure is</span>
+              <span class="c1"># taken during the class definition time</span>
+              <span class="c1"># and not when the instance of B gets</span>
+              <span class="c1"># created.</span>
+
+        <span class="k">class</span> <span class="nc">B</span><span class="p">:</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="mi">10</span>
+
+                <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">y</span>
+
+                <span class="k">def</span> <span class="nf">getX</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+
+        <span class="n">a</span> <span class="o">=</span> <span class="n">A</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+
+        <span class="n">b</span> <span class="o">=</span> <span class="n">B</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+
+        <span class="n">slope</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">slope</span><span class="p">()</span>
+
+        <span class="n">bx</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">getX</span><span class="p">()</span>
+
+        <span class="n">bx2</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">getX</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+
+        <span class="n">slope2</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">slope</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="n">slope</span><span class="p">,</span><span class="n">slope2</span><span class="p">,</span><span class="n">bx</span><span class="p">,</span><span class="n">bx2</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">main</span><span class="p">()</span>
+<span class="k">else</span><span class="p">:</span>
+        <span class="n">disassembler</span><span class="o">.</span><span class="n">disassemble</span><span class="p">(</span><span class="n">Base</span><span class="p">)</span>
+        <span class="n">disassembler</span><span class="o">.</span><span class="n">disassemble</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+        <span class="n">disassembler</span><span class="o">.</span><span class="n">disassemble</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The disassembled code from this example is provided here.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Class</span><span class="p">:</span> <span class="n">Base</span>
+<span class="n">BEGIN</span>
+    <span class="n">Function</span><span class="p">:</span> <span class="fm">__init__</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">Constants</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;Base __init__&quot;</span>
+    <span class="n">Locals</span><span class="p">:</span> <span class="bp">self</span><span class="p">,</span> <span class="n">z</span>
+    <span class="n">Globals</span><span class="p">:</span> <span class="n">z</span><span class="p">,</span> <span class="k">print</span>
+    <span class="n">BEGIN</span>
+              <span class="n">LOAD_FAST</span>                      <span class="mi">1</span>
+              <span class="n">LOAD_FAST</span>                      <span class="mi">0</span>
+              <span class="n">STORE_ATTR</span>                     <span class="mi">0</span>
+              <span class="n">LOAD_GLOBAL</span>                    <span class="mi">1</span>
+              <span class="n">LOAD_CONST</span>                     <span class="mi">1</span>
+              <span class="n">CALL_FUNCTION</span>                  <span class="mi">1</span>
+              <span class="n">POP_TOP</span>
+              <span class="n">LOAD_CONST</span>                     <span class="mi">0</span>
+              <span class="n">RETURN_VALUE</span>
+    <span class="n">END</span>
+<span class="n">END</span>
+<span class="n">Class</span><span class="p">:</span> <span class="n">A</span><span class="p">(</span><span class="n">Base</span><span class="p">)</span>
+<span class="n">BEGIN</span>
+    <span class="n">Function</span><span class="p">:</span> <span class="n">slope</span><span class="o">/</span><span class="mi">1</span>
+    <span class="n">Constants</span><span class="p">:</span> <span class="bp">None</span>
+    <span class="n">Locals</span><span class="p">:</span> <span class="bp">self</span>
+    <span class="n">Globals</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+    <span class="n">BEGIN</span>
+              <span class="n">LOAD_FAST</span>                      <span class="mi">0</span>
+              <span class="n">LOAD_ATTR</span>                      <span class="mi">0</span>
+              <span class="n">LOAD_FAST</span>                      <span class="mi">0</span>
+              <span class="n">LOAD_ATTR</span>                      <span class="mi">1</span>
+              <span class="n">BINARY_TRUE_DIVIDE</span>
+              <span class="n">RETURN_VALUE</span>
+    <span class="n">END</span>
+    <span class="n">Function</span><span class="p">:</span> <span class="fm">__str__</span><span class="o">/</span><span class="mi">1</span>
+    <span class="n">Constants</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;This is an A object&quot;</span>
+    <span class="n">Locals</span><span class="p">:</span> <span class="bp">self</span>
+    <span class="n">BEGIN</span>
+              <span class="n">LOAD_CONST</span>                     <span class="mi">1</span>
+              <span class="n">RETURN_VALUE</span>
+    <span class="n">END</span>
+    <span class="n">Function</span><span class="p">:</span> <span class="n">getX</span><span class="o">/</span><span class="mi">1</span>
+    <span class="n">Constants</span><span class="p">:</span> <span class="bp">None</span>
+    <span class="n">Locals</span><span class="p">:</span> <span class="bp">self</span>
+    <span class="n">Globals</span><span class="p">:</span> <span class="n">x</span>
+    <span class="n">BEGIN</span>
+              <span class="n">LOAD_FAST</span>                      <span class="mi">0</span>
+              <span class="n">LOAD_ATTR</span>                      <span class="mi">0</span>
+              <span class="n">RETURN_VALUE</span>
+    <span class="n">END</span>
+    <span class="n">Function</span><span class="p">:</span> <span class="fm">__init__</span><span class="o">/</span><span class="mi">3</span>
+    <span class="n">Constants</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="mi">6</span>
+    <span class="n">Locals</span><span class="p">:</span> <span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span>
+    <span class="n">FreeVars</span><span class="p">:</span> <span class="vm">__class__</span>
+    <span class="n">Globals</span><span class="p">:</span> <span class="nb">super</span><span class="p">,</span> <span class="k">print</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="fm">__init__</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+    <span class="n">BEGIN</span>
+              <span class="n">LOAD_GLOBAL</span>                    <span class="mi">0</span>
+              <span class="n">CALL_FUNCTION</span>                  <span class="mi">0</span>
+              <span class="n">STORE_FAST</span>                     <span class="mi">3</span>
+              <span class="n">LOAD_GLOBAL</span>                    <span class="mi">1</span>
+              <span class="n">LOAD_GLOBAL</span>                    <span class="mi">0</span>
+              <span class="n">CALL_FUNCTION</span>                  <span class="mi">1</span>
+              <span class="n">POP_TOP</span>
+              <span class="n">LOAD_GLOBAL</span>                    <span class="mi">1</span>
+              <span class="n">LOAD_FAST</span>                      <span class="mi">3</span>
+              <span class="n">CALL_FUNCTION</span>                  <span class="mi">1</span>
+              <span class="n">POP_TOP</span>
+              <span class="n">LOAD_GLOBAL</span>                    <span class="mi">1</span>
+              <span class="n">LOAD_GLOBAL</span>                    <span class="mi">2</span>
+              <span class="n">LOAD_FAST</span>                      <span class="mi">3</span>
+              <span class="n">CALL_FUNCTION</span>                  <span class="mi">1</span>
+              <span class="n">CALL_FUNCTION</span>                  <span class="mi">1</span>
+              <span class="n">POP_TOP</span>
+              <span class="n">LOAD_GLOBAL</span>                    <span class="mi">0</span>
+              <span class="n">CALL_FUNCTION</span>                  <span class="mi">0</span>
+              <span class="n">LOAD_ATTR</span>                      <span class="mi">3</span>
+              <span class="n">LOAD_CONST</span>                     <span class="mi">1</span>
+              <span class="n">CALL_FUNCTION</span>                  <span class="mi">1</span>
+              <span class="n">POP_TOP</span>
+              <span class="n">LOAD_FAST</span>                      <span class="mi">1</span>
+              <span class="n">LOAD_FAST</span>                      <span class="mi">0</span>
+              <span class="n">LOAD_ATTR</span>                      <span class="mi">4</span>
+              <span class="n">BINARY_ADD</span>
+              <span class="n">LOAD_FAST</span>                      <span class="mi">0</span>
+              <span class="n">STORE_ATTR</span>                     <span class="mi">5</span>
+              <span class="n">LOAD_FAST</span>                      <span class="mi">2</span>
+              <span class="n">LOAD_FAST</span>                      <span class="mi">0</span>
+              <span class="n">LOAD_ATTR</span>                      <span class="mi">4</span>
+              <span class="n">BINARY_ADD</span>
+              <span class="n">LOAD_FAST</span>                      <span class="mi">0</span>
+              <span class="n">STORE_ATTR</span>                     <span class="mi">6</span>
+              <span class="n">LOAD_CONST</span>                     <span class="mi">0</span>
+              <span class="n">RETURN_VALUE</span>
+    <span class="n">END</span>
+<span class="n">END</span>
+<span class="n">Function</span><span class="p">:</span> <span class="n">main</span><span class="o">/</span><span class="mi">0</span>
+    <span class="n">Function</span><span class="p">:</span> <span class="n">B</span><span class="o">/</span><span class="mi">1</span>
+        <span class="n">Function</span><span class="p">:</span> <span class="fm">__init__</span><span class="o">/</span><span class="mi">2</span>
+        <span class="n">Constants</span><span class="p">:</span> <span class="bp">None</span>
+        <span class="n">Locals</span><span class="p">:</span> <span class="bp">self</span><span class="p">,</span> <span class="n">x</span>
+        <span class="n">FreeVars</span><span class="p">:</span> <span class="n">y</span>
+        <span class="n">Globals</span><span class="p">:</span> <span class="n">x</span>
+        <span class="n">BEGIN</span>
+                  <span class="n">LOAD_DEREF</span>                     <span class="mi">0</span>
+                  <span class="n">LOAD_FAST</span>                      <span class="mi">0</span>
+                  <span class="n">STORE_ATTR</span>                     <span class="mi">0</span>
+                  <span class="n">LOAD_CONST</span>                     <span class="mi">0</span>
+                  <span class="n">RETURN_VALUE</span>
+        <span class="n">END</span>
+        <span class="n">Function</span><span class="p">:</span> <span class="n">getX</span><span class="o">/</span><span class="mi">1</span>
+        <span class="n">Constants</span><span class="p">:</span> <span class="bp">None</span>
+        <span class="n">Locals</span><span class="p">:</span> <span class="bp">self</span>
+        <span class="n">Globals</span><span class="p">:</span> <span class="n">x</span>
+        <span class="n">BEGIN</span>
+                  <span class="n">LOAD_FAST</span>                      <span class="mi">0</span>
+                  <span class="n">LOAD_ATTR</span>                      <span class="mi">0</span>
+                  <span class="n">RETURN_VALUE</span>
+        <span class="n">END</span>
+    <span class="n">Constants</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="n">code</span><span class="p">(</span><span class="fm">__init__</span><span class="p">),</span> <span class="n">code</span><span class="p">(</span><span class="n">getX</span><span class="p">),</span> <span class="bp">None</span>
+    <span class="n">Locals</span><span class="p">:</span> <span class="n">__locals__</span>
+    <span class="n">FreeVars</span><span class="p">:</span> <span class="n">y</span>
+    <span class="n">Globals</span><span class="p">:</span> <span class="vm">__name__</span><span class="p">,</span> <span class="vm">__module__</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="fm">__init__</span><span class="p">,</span> <span class="n">getX</span>
+    <span class="n">BEGIN</span>
+              <span class="n">LOAD_FAST</span>                      <span class="mi">0</span>
+              <span class="n">STORE_LOCALS</span>
+              <span class="n">LOAD_NAME</span>                      <span class="mi">0</span>
+              <span class="n">STORE_NAME</span>                     <span class="mi">1</span>
+              <span class="n">LOAD_CONST</span>                     <span class="mi">0</span>
+              <span class="n">STORE_NAME</span>                     <span class="mi">2</span>
+              <span class="n">LOAD_CLOSURE</span>                   <span class="mi">0</span>
+              <span class="n">BUILD_TUPLE</span>                    <span class="mi">1</span>
+              <span class="n">LOAD_CONST</span>                     <span class="mi">1</span>
+              <span class="n">MAKE_CLOSURE</span>                   <span class="mi">0</span>
+              <span class="n">STORE_NAME</span>                     <span class="mi">3</span>
+              <span class="n">LOAD_CONST</span>                     <span class="mi">2</span>
+              <span class="n">MAKE_FUNCTION</span>                  <span class="mi">0</span>
+              <span class="n">STORE_NAME</span>                     <span class="mi">4</span>
+              <span class="n">LOAD_CONST</span>                     <span class="mi">3</span>
+              <span class="n">RETURN_VALUE</span>
+    <span class="n">END</span>
+<span class="n">Constants</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">code</span><span class="p">(</span><span class="n">B</span><span class="p">),</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span>
+<span class="n">Locals</span><span class="p">:</span> <span class="n">B</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">slope</span><span class="p">,</span> <span class="n">bx</span><span class="p">,</span> <span class="n">bx2</span><span class="p">,</span> <span class="n">slope2</span>
+<span class="n">CellVars</span><span class="p">:</span> <span class="n">y</span>
+<span class="n">Globals</span><span class="p">:</span> <span class="n">A</span><span class="p">,</span> <span class="k">print</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">slope</span><span class="p">,</span> <span class="n">getX</span>
+<span class="n">BEGIN</span>
+          <span class="n">LOAD_CONST</span>                     <span class="mi">1</span>
+          <span class="n">STORE_DEREF</span>                    <span class="mi">0</span>
+          <span class="n">LOAD_BUILD_CLASS</span>
+          <span class="n">LOAD_CLOSURE</span>                   <span class="mi">0</span>
+          <span class="n">BUILD_TUPLE</span>                    <span class="mi">1</span>
+          <span class="n">LOAD_CONST</span>                     <span class="mi">2</span>
+          <span class="n">MAKE_CLOSURE</span>                   <span class="mi">0</span>
+          <span class="n">LOAD_CONST</span>                     <span class="mi">3</span>
+          <span class="n">CALL_FUNCTION</span>                  <span class="mi">2</span>
+          <span class="n">STORE_FAST</span>                     <span class="mi">0</span>
+          <span class="n">LOAD_GLOBAL</span>                    <span class="mi">0</span>
+          <span class="n">LOAD_CONST</span>                     <span class="mi">4</span>
+          <span class="n">LOAD_CONST</span>                     <span class="mi">5</span>
+          <span class="n">CALL_FUNCTION</span>                  <span class="mi">2</span>
+          <span class="n">STORE_FAST</span>                     <span class="mi">1</span>
+          <span class="n">LOAD_FAST</span>                      <span class="mi">0</span>
+          <span class="n">LOAD_CONST</span>                     <span class="mi">4</span>
+          <span class="n">CALL_FUNCTION</span>                  <span class="mi">1</span>
+          <span class="n">STORE_FAST</span>                     <span class="mi">2</span>
+          <span class="n">LOAD_GLOBAL</span>                    <span class="mi">1</span>
+          <span class="n">LOAD_FAST</span>                      <span class="mi">1</span>
+          <span class="n">CALL_FUNCTION</span>                  <span class="mi">1</span>
+          <span class="n">POP_TOP</span>
+          <span class="n">LOAD_GLOBAL</span>                    <span class="mi">1</span>
+          <span class="n">LOAD_GLOBAL</span>                    <span class="mi">2</span>
+          <span class="n">LOAD_FAST</span>                      <span class="mi">1</span>
+          <span class="n">CALL_FUNCTION</span>                  <span class="mi">1</span>
+          <span class="n">CALL_FUNCTION</span>                  <span class="mi">1</span>
+          <span class="n">POP_TOP</span>
+          <span class="n">LOAD_GLOBAL</span>                    <span class="mi">1</span>
+          <span class="n">LOAD_GLOBAL</span>                    <span class="mi">2</span>
+          <span class="n">LOAD_GLOBAL</span>                    <span class="mi">0</span>
+          <span class="n">CALL_FUNCTION</span>                  <span class="mi">1</span>
+          <span class="n">CALL_FUNCTION</span>                  <span class="mi">1</span>
+          <span class="n">POP_TOP</span>
+          <span class="n">LOAD_GLOBAL</span>                    <span class="mi">1</span>
+          <span class="n">LOAD_GLOBAL</span>                    <span class="mi">2</span>
+          <span class="n">LOAD_CONST</span>                     <span class="mi">1</span>
+          <span class="n">CALL_FUNCTION</span>                  <span class="mi">1</span>
+          <span class="n">CALL_FUNCTION</span>                  <span class="mi">1</span>
+          <span class="n">POP_TOP</span>
+          <span class="n">LOAD_FAST</span>                      <span class="mi">1</span>
+          <span class="n">LOAD_ATTR</span>                      <span class="mi">3</span>
+          <span class="n">CALL_FUNCTION</span>                  <span class="mi">0</span>
+          <span class="n">STORE_FAST</span>                     <span class="mi">3</span>
+          <span class="n">LOAD_FAST</span>                      <span class="mi">2</span>
+          <span class="n">LOAD_ATTR</span>                      <span class="mi">4</span>
+          <span class="n">CALL_FUNCTION</span>                  <span class="mi">0</span>
+          <span class="n">STORE_FAST</span>                     <span class="mi">4</span>
+          <span class="n">LOAD_FAST</span>                      <span class="mi">0</span>
+          <span class="n">LOAD_ATTR</span>                      <span class="mi">4</span>
+          <span class="n">LOAD_FAST</span>                      <span class="mi">2</span>
+          <span class="n">CALL_FUNCTION</span>                  <span class="mi">1</span>
+          <span class="n">STORE_FAST</span>                     <span class="mi">5</span>
+          <span class="n">LOAD_GLOBAL</span>                    <span class="mi">0</span>
+          <span class="n">LOAD_ATTR</span>                      <span class="mi">3</span>
+          <span class="n">LOAD_FAST</span>                      <span class="mi">1</span>
+          <span class="n">CALL_FUNCTION</span>                  <span class="mi">1</span>
+          <span class="n">STORE_FAST</span>                     <span class="mi">6</span>
+          <span class="n">LOAD_GLOBAL</span>                    <span class="mi">1</span>
+          <span class="n">LOAD_FAST</span>                      <span class="mi">3</span>
+          <span class="n">LOAD_FAST</span>                      <span class="mi">6</span>
+          <span class="n">LOAD_FAST</span>                      <span class="mi">4</span>
+          <span class="n">LOAD_FAST</span>                      <span class="mi">5</span>
+          <span class="n">CALL_FUNCTION</span>                  <span class="mi">4</span>
+          <span class="n">POP_TOP</span>
+          <span class="n">LOAD_CONST</span>                     <span class="mi">0</span>
+          <span class="n">RETURN_VALUE</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>One part to notice in particular is the definition of class <em>B</em> inside the main function. Class <em>B</em> references a value outside the scope of the class. As a result a function <em>B</em> is defined in the assembly language program whose responsibility it is to instantiate the class. Every class has a list of attributes that include the methods of their object instances. When the function <em>B</em> is executed, the locals of function <em>B</em> are the attributes of class <em>B</em>. So when functions are created and stored into the locals of <em>B</em> they are actually being stored into the attributes of class <em>B</em>. Defining the class <em>B</em> this way enables the free variable y to be referenced from outside the scope of the <em>B</em> class.</p>
+<p>Another interesting thing to note: Functions are stored as attributes of a class. When an object of a class is instantiated, the functions are instantiated as methods. A method automatically passes <em>self</em> as the first parameter to the function that the method encapsulates.</p>
+</div>
+</div>
+<div class="section" id="turtle-graphics">
+<h1>Turtle Graphics<a class="headerlink" href="#turtle-graphics" title="Permalink to this headline">¶</a></h1>
+<p>Recently, Turtle Graphics support has been added to JCoCo. You can view documentation for the <a class="reference external" href="https://docs.python.org/3/library/turtle.html?highlight=turtle">Turtle Graphics API</a> by following this link. JCoCo
+sees Turtle Graphics as a module. For instance, it is possible to disassemble this program and run the disassembled program with JCoCo.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">turtle</span>
+<span class="kn">import</span> <span class="nn">disassembler</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+
+    <span class="n">t</span> <span class="o">=</span> <span class="n">turtle</span><span class="o">.</span><span class="n">Turtle</span><span class="p">()</span>
+
+    <span class="c1">#t.up()</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">speed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">rt</span><span class="p">(</span><span class="mi">360</span><span class="p">)</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">left</span><span class="p">(</span><span class="mi">360</span><span class="p">)</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">right</span><span class="p">(</span><span class="mi">45</span><span class="p">)</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">fd</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">home</span><span class="p">()</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">ht</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">isvisible</span><span class="p">())</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">isdown</span><span class="p">())</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">left</span><span class="p">(</span><span class="mi">45</span><span class="p">)</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span><span class="o">-</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">home</span><span class="p">()</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">turtle</span><span class="o">.</span><span class="n">Turtle</span><span class="p">()</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">pencolor</span><span class="p">(</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+    <span class="c1">#s.speed(0)</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">hideturtle</span><span class="p">()</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">width</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">left</span><span class="p">(</span><span class="mi">45</span><span class="p">)</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">hideturtle</span><span class="p">()</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">begin_fill</span><span class="p">()</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">end_fill</span><span class="p">()</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">pencolor</span><span class="p">(</span><span class="s2">&quot;blue&quot;</span><span class="p">)</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Hello World!!!!!&quot;</span><span class="p">,</span><span class="bp">False</span><span class="p">,</span><span class="s2">&quot;right&quot;</span><span class="p">,(</span><span class="s2">&quot;Arial&quot;</span><span class="p">,</span><span class="mi">24</span><span class="p">,</span><span class="s2">&quot;bold&quot;</span><span class="p">))</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">hideturtle</span><span class="p">()</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">home</span><span class="p">()</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">fd</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+    <span class="n">stamp_id</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">stamp</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">):</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">fd</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">rt</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+        <span class="n">stamp_id</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">stamp</span><span class="p">()</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">undo</span><span class="p">()</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">clearstamps</span><span class="p">()</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">home</span><span class="p">()</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="o">-</span><span class="mi">75</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">):</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">fd</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">rt</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+        <span class="n">stamp_id</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">stamp</span><span class="p">()</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="o">-</span><span class="mi">200</span><span class="p">,</span><span class="mi">200</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">):</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">fd</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">rt</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+        <span class="n">stamp_id</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">stamp</span><span class="p">()</span>
+    <span class="n">t</span><span class="o">.</span><span class="n">undo</span><span class="p">()</span>
+
+
+    <span class="n">screen</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">getscreen</span><span class="p">()</span>
+    <span class="n">screen</span><span class="o">.</span><span class="n">exitonclick</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+      <span class="n">main</span><span class="p">()</span>
+<span class="k">else</span><span class="p">:</span>
+      <span class="n">disassembler</span><span class="o">.</span><span class="n">disassemble</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>While much of Turtle Graphics is implemented, it is not a complete implementation so consider this experimental code.</p>
+</div>
+<div class="section" id="assembly-program-syntax">
+<h1>Assembly Program Syntax<a class="headerlink" href="#assembly-program-syntax" title="Permalink to this headline">¶</a></h1>
+<p>The syntax of the JCoCo assembly language is pretty well illustrated by the three examples above. The complete syntax of the language is given here as a BNF. There are just a few things to note in the BNF below that weren’t illustrated by either example above.</p>
+<blockquote>
+<div><ul class="simple">
+<li>Instructions may have as many labels defined on them as necessary. The definition of labeled instruction is recursive.</li>
+<li>The &lt;null&gt; below indicates an empty production. So a ClassFunctionList may be empty for instance, meaning that there might not be a class and function list in a function definition or put another way, the list may be empty. In this case that simply means a function might or might not have some nested functions or classes.</li>
+<li>[ and ] indicate an optional part of a JCoCo program.</li>
+<li>Of course, the … indicates there are more Unary and Binary mnemonics that are not listed in the BNF. The complete list of instructions and descriptions of each of them are given below.</li>
+<li>The JCoCo language is not line oriented. This BNF completely describes the language which has no line requirements. However, formatting a program like the disassembler output will help in the clarity of the code you are writing.</li>
+</ul>
+</div></blockquote>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>CoCoAssemblyProg ::= ClassFunctionListPart EOF
+
+ClassFunctionListPart ::= ClassFunDef ClassFunctionList
+
+ClassFunctionList ::= ClassFunDef ClassFunctionList | &lt;null&gt;
+
+ClassFunDef ::= ClassDef | FunDef
+
+ClassDef ::= Class colon Identifier [ ( Identifier ) ] BEGIN ClassFunctionList END
+
+FunDef ::= Function colon Identifier slash Integer ClassFunctionList ConstPart
+         LocalsPart FreeVarsPart CellVarsPart GlobalsPart BodyPart
+
+ConstPart ::= &lt;null&gt; | Constants colon ValueList
+
+ValueList ::= Value ValueRest
+
+ValueRest ::= comma ValueList | &lt;null&gt;
+
+Value ::= None | True | False | Integer | Float | String | code(Identifier) | TupleVal
+
+TupleVal ::= ( Value ) | ( Value ValueRest )
+(* the Scanner sees None, True, False, as Identifiers. *)
+
+LocalsPart ::= &lt;null&gt; | Locals colon IdList
+
+FeeVarsPart ::= &lt;null&gt; | FreeVars colon IdList
+
+CellVarsPart ::= &lt;null&gt; | CellVars colon IdList
+
+IdList ::= Identifier IdRest
+
+IdRest ::= comma IdList | &lt;null&gt;
+
+GlobalsPart ::= &lt;null&gt; | Globals colon IdList
+
+BodyPart ::= BEGIN InstructionList END
+
+InstructionList ::= &lt;null&gt; | LabeledInstruction InstructionList
+
+LabeledInstruction ::= Identifier colon LabeledInstruction | Instruction | OpInstruction
+
+Instruction ::= STOP_CODE | NOP | POP_TOP | ROT_TWO | ROT_THREE | ...
+
+OpInstruction ::= OpMnemonic Integer | OpMnemonic Identifier
+
+OpMnemonic ::= LOAD_CONST | STORE_FAST | SETUP_LOOP | COMPARE_OP | POP_JUMP_IF_FALSE | ...
+</pre></div>
+</div>
+</div>
+<div class="section" id="types">
+<h1>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h1>
+<p>JCoCo supports the following types within the language.</p>
+<blockquote>
+<div><ul class="simple">
+<li>The <strong>type</strong> type is the type of all types, including itself.</li>
+<li>The <strong>NoneType</strong> is the type of None.</li>
+<li><strong>bool</strong> is the type of boolean types.</li>
+<li><strong>int</strong> is for integer types (implemented as a Java int, which according to documentation is 32 bits in length).</li>
+<li><strong>float</strong> is the type for floating point numbers (implemented as a double precision floating point number in JCoCo).</li>
+<li><strong>str</strong> is the type for all strings.</li>
+<li><strong>str_iterator</strong> is the type for iterators over strings.</li>
+<li><strong>function</strong> is the type of all user-defined functions.</li>
+<li><strong>method</strong> is the type of all user-defined methods of an instance object.</li>
+<li><strong>built_in_function_or_method</strong> is the type of all built-in functions or methods.</li>
+<li><strong>range</strong> is the type of range objects.</li>
+<li><strong>range_iterator</strong> is the type of range iterator objects.</li>
+<li><strong>Exception</strong> is the type of all exceptions.</li>
+<li><strong>list</strong> is the type of list objects like the original Python list objects.</li>
+<li><strong>list_iterator</strong> is the type of iterators over lists.</li>
+<li><strong>funlist</strong> is the type of functional list objects. This is a new type not supported in Python with the properties of lists from functional languages that are constructed from a head and a tail. funlist values are immutable as opposed to the list type.</li>
+<li><strong>funlist_iterator</strong> is the type of iterators over funlists.</li>
+<li><strong>tuple</strong> is type type of tuple objects. Tuples are like lists, but are immutable.</li>
+<li><strong>tuple_iterator</strong> is the type of iterators over tuples.</li>
+<li><strong>dict</strong> is the type of all dictionaries, i.e. maps.</li>
+<li><strong>dict_keyiterator</strong> is the type of dictionary key iterators.</li>
+<li><strong>_io.TextIOWrapper</strong> is the type of all files created with the open built-in function.</li>
+<li><strong>code</strong> is the type of code objects (i.e. functions).</li>
+<li><strong>cell</strong> is the type of all indirect reference objects.</li>
+<li><strong>super</strong> is the type of super class objects used in object instantiation in the presence of inheritance.</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="methods">
+<h1>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="magic-methods">
+<h2>Magic Methods<a class="headerlink" href="#magic-methods" title="Permalink to this headline">¶</a></h2>
+<p>One of the powerful features of the Python language results from methods being looked up on objects at run-time. This means that new types of objects can easily be added to the language because the virtual machine instructions presented below will polymorphically call the proper methods since lookup happens at run-time. In support of this, JCoCo, like Python, has what have traditionally been called magic methods. These methods typically begin and end with two underscores. Magic methods are used by instructions as needed. For instance, the __add__ magic method is used by the BINARY_ADD instruction.</p>
+<p>JCoCo includes support for many of the magic methods that are defined by Python. While support is there for the whole list, not all magic methods are implemented on each type of object. The magic methods that are supported by a type of object are controlled by its type or class definition. When a magic method is called, the magic method is first looked up on the type and if it is supported, the call is made. Otherwise, an IllegalOperationException is raised. The use of magic methods is illustrated below in the descriptions of the JCoCo instructions.</p>
+<p>The possible magic methods include the following: __cmp__, __eq__, __ne__, __lt__, __gt__, __le__, __ge__, __pos__, __neg__, __abs__, __invert__, __round__, __floor__, __ceil__, __trunc__, __add__, __sub__, __mul__, __floordiv__, __div__, __truediv__, __mod__, __divmod__, __pow__, __lshift__, __rshift__, __and__, __or__, __xor__, __radd__, __rsub__, __rmul__, __rfloordiv__, __rdiv__, __rtruediv__, __rmod__, __rdivmod__, __rpow__, __rlshift__, __rand__, __ror__, __rxor__, __iadd__, __isub__, __imul__, __ifloordiv__, __idiv__, __itruediv__, __imod__, __ipow__, __ilshift__, __iand__, __ior__, __ixor__, __int__, __long__, __float__, __bool__, __cmplex__, __oct__, __hex__, __index__, __coerce__, __str__, __list__, <a href="#id1"><span class="problematic" id="id2">funlist__</span></a>, __repr__, __unicode__, __format__, __hash__, __nonzero__, __dir__, __sizeof__, __getattr__, __setattr__, __delattr__, __getattribute__, __len__, __getitem__, __setitem__, __delitem__, __reversed__, __contains__, __missing__, __instancecheck__, __subclasscheck__, __call__, __copy__, __deepcopy__, __iter__, __next__, __type__, __excmatch__. The last two magic methods are specific to JCoCo. The __type__ magic method is called when the type function is called on an object. The __excmatch__ magic method is called when matching an exception in an exception handler.</p>
+</div>
+<div class="section" id="other-methods">
+<h2>Other Methods<a class="headerlink" href="#other-methods" title="Permalink to this headline">¶</a></h2>
+<p>Some additional methods are defined on some of these built-in types that are not implemented as magic methods. Here are the other defined methods in JCoCo and the types of values on which they are defined.</p>
+<div class="section" id="dictionaries">
+<h3>Dictionaries<a class="headerlink" href="#dictionaries" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><strong>keys()</strong> - the keys of the dictionary as a list.</li>
+<li><strong>values()</strong> - the values of the dictionary as a list.</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="files">
+<h3>Files<a class="headerlink" href="#files" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><strong>readline()</strong> - reads one line from the file and returns it.</li>
+<li><strong>write(s)</strong> - writes <em>s</em> to the file.</li>
+<li><strong>close()</strong> - closes a file.</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="funlists">
+<h3>FunLists<a class="headerlink" href="#funlists" title="Permalink to this headline">¶</a></h3>
+<p>FunLists are not found in Python but are defined in JCoCo to support <em>funlist</em> objects which are defined to have a head and a tail like lists in functional languages.</p>
+<blockquote>
+<div><ul class="simple">
+<li><strong>head()</strong> - returns the <em>head</em> or first item of a FunList.</li>
+<li><strong>tail()</strong> - returns the <em>tail</em> or the rest of the FunList.</li>
+<li><strong>concat()</strong> - returns a string resulting from concatenating all the items of the FunList together.</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="lists">
+<h3>Lists<a class="headerlink" href="#lists" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><strong>append(item)</strong> - appends an item at the end of the list.</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="strings">
+<h3>Strings<a class="headerlink" href="#strings" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><strong>split([delim])</strong> - splits a string into a list of strings based on the delimiter which is optional. If omitted the delim characters are whitespace (i.e. blanks, tabs, newlines).</li>
+<li><strong>strip([delim])</strong> - strips characters from both ends of a string that appear in delim. If omitted, delim characters are whitespace.</li>
+</ul>
+</div></blockquote>
+<p>In addition, some objects have additional methods defined on them that are accessed like traditional method calls on objects. For instance, str objects have a split method that can be called to split a string on separator characters. Here is the list of attr methods defined in JCoCo: split, append, head, tail, concat.</p>
+</div>
+</div>
+</div>
+<div class="section" id="global-built-ins">
+<h1>Global Built-Ins<a class="headerlink" href="#global-built-ins" title="Permalink to this headline">¶</a></h1>
+<p>JCoCo supports the following globally available built-in functions and values.</p>
+<blockquote>
+<div><ul class="simple">
+<li><strong>print</strong> is a built-in function that prints a variable number of arguments to standard output, followed by a newline character, and returns None, just as print does in Python. The objects passed to print are printed by calling the __str__ magic method on each of them and appending their strings with an extra space between each pair of objects.</li>
+<li><strong>fprint</strong> prints exactly one argument. This is a built-in function that is specific to JCoCo and is not part of the standard Python language. It prints its argument by calling the __str__ magic method on the object to convert it to a string. This function returns itself, which can be useful when chaining together print expressions.</li>
+<li><strong>tprint</strong> prints exactly one argument, which may be a tuple, and returns None. tprint can be thought of as tuple print, because if a tuple is provided, the contents of the tuple are printed, separated by spaces, just as print does. However, tprint takes only one argument which may be a tuple. print takes a variable number of arguments. tprint is specific to JCoCo and is not part of the standard Python language. The values of the tuple are converted to strings using the __str__ magic method on each object. None is returned by tprint.</li>
+<li><strong>input</strong> is a built-in function that prints its prompt to standard output and returns one line of input as a string, just as input does in Python.</li>
+<li><strong>iter</strong> is a built-in function that constructs and returns an iterator over the object that is passed to it, just as Python’s iter function works. This is implemented by calling the __iter__ magic method on the object.</li>
+<li><strong>len</strong> is a built-in function that returns the length of the sequence that is passed to it. It does this by calling the __len__ magic method on the object given to it.</li>
+<li><strong>concat</strong> is built-in function that returns a string representation of the elements of its sequence concatenated together. The concat function in turn calls the concat method on the object that is passed to it.</li>
+<li><strong>int</strong>, <strong>float</strong>, <strong>str</strong>, <strong>funlist</strong>, <strong>list</strong>, <strong>type</strong>, and <strong>bool</strong> are all calls to types. When the type is called, the corresponding magic method of __int__, __float__, __str__, __funlist__, __list__, __type__, or __bool__ is called on the object that is passed to it. In this way, the object itself is in charge of how it is converted to the specified type.</li>
+<li><strong>range</strong> is a call to the range type that constructs a range object over the specified range. As in Python, the range function has 1, 2, or 3 arguments passed to it, representing the start, stop, and increment of the range of integer values. The start and increment values are optional.</li>
+<li><strong>Exception</strong> is a call to the exception type that constructs and returns an exception object that may be raised or thrown and caught by an exception handler.</li>
+<li><strong>super</strong> may be called in an instance method to gain access to the base class of an object. Single inheritance is supported in JCoCo. Unlike Python, multiple inheritance is not supported.</li>
+<li><strong>open(filename, mode)</strong> is called to open a file for writing or reading. The <em>mode</em> is either <em>r</em> or <em>w</em>. If omitted, <em>r</em> is assumbed for the mode.</li>
+<li><strong>sys.stdin</strong> is pre-defined to be standard input.</li>
+<li><strong>sys.stdout</strong> is pre-defined to be standard output.</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="virtual-machine-instructions">
+<h1>Virtual Machine Instructions<a class="headerlink" href="#virtual-machine-instructions" title="Permalink to this headline">¶</a></h1>
+<p>JCoCo implements the following instructions. These instructions are a subset of the instructions supported by the Python Virtual Machine plus a few extra instructions. There are two minor differences from the Python Virtual Machine.</p>
+<blockquote>
+<div><ul class="simple">
+<li>JCoCo instructions each take up exactly one location of space. The Python Virtual Machine uses one or more bytes for each instruction and therefore some instructions are composed of multiple bytes. JCoCo does not store its instructions as bytes and therefore each instruction takes exactly one location within the JCoCo virtual machine interpreter.</li>
+<li>JCoCo branch and jump instructions jump to labeled instructions. When read by the JCoCo assembler, the labels are converted to target locations which are always absolute addresses. In the Python Virtual Machine some branch instructions provide absolute addresses to jump to and others provide relative offsets to add to the current program counter. The disassembler provided with JCoCo converts all relative and absolute target addresses in jumps and branches to labels for JCoCo. This makes disassembled code more readable and compatible with the JCoCo format.</li>
+</ul>
+</div></blockquote>
+<p>Other than these two minor differences, the implementation of the instructions is pretty faithful to a subset of the Python Virtual Machine implementation. The full Python 3.2 instruction descriptions are available at <a class="reference external" href="https://docs.python.org/release/3.2.5/library/dis.html">Python 3.2 Instruction Definitions</a>.</p>
+<p>And here are the JCoCo instruction descriptions. Again, this is a subset of the full Python 3.2 instruction set with the addition of a few extra instructions and a couple of minor differences.</p>
+<p>In the instructions below TOS refers to the top element on the operand stack. TOS1 refers to the element on the operand stack that is second from the top. TOS2, and so on are similarly defined.</p>
+<div class="section" id="arithmetic-instructions">
+<h2>Arithmetic Instructions<a class="headerlink" href="#arithmetic-instructions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="binary-add">
+<h3>BINARY_ADD<a class="headerlink" href="#binary-add" title="Permalink to this headline">¶</a></h3>
+<p><strong>BINARY_ADD</strong> implements TOS = TOS1 + TOS by making the call TOS.__add__(TOS1).</p>
+</div>
+<div class="section" id="binary-subtract">
+<h3>BINARY_SUBTRACT<a class="headerlink" href="#binary-subtract" title="Permalink to this headline">¶</a></h3>
+<p><em>BINARY_SUBTRACT*</em> implements TOS = TOS1 - TOS by making the call TOS.__sub__(TOS1).</p>
+</div>
+<div class="section" id="binary-multiply">
+<h3>BINARY_MULTIPLY<a class="headerlink" href="#binary-multiply" title="Permalink to this headline">¶</a></h3>
+<p><strong>BINARY_MULTIPLY</strong> implements TOS = TOS1 * TOS by making the call TOS.__mul__(TOS1).</p>
+</div>
+<div class="section" id="binary-modulo">
+<h3>BINARY_MODULO<a class="headerlink" href="#binary-modulo" title="Permalink to this headline">¶</a></h3>
+<p><strong>BINARY_MODULO</strong> implements TOS = TOS1 % TOS by making the call TOS.__mod__(TOS1).</p>
+</div>
+<div class="section" id="binary-floor-divide">
+<h3>BINARY_FLOOR_DIVIDE<a class="headerlink" href="#binary-floor-divide" title="Permalink to this headline">¶</a></h3>
+<p><strong>BINARY_FLOOR_DIVIDE</strong> implements TOS = TOS1 // TOS by making the call TOS.__floordiv__(TOS1).</p>
+</div>
+<div class="section" id="binary-true-divide">
+<h3>BINARY_TRUE_DIVIDE<a class="headerlink" href="#binary-true-divide" title="Permalink to this headline">¶</a></h3>
+<p><strong>BINARY_TRUE_DIVIDE</strong> implements TOS = TOS1 / TOS by making the call TOS.__truediv__(TOS1).</p>
+</div>
+<div class="section" id="binary-power">
+<h3>BINARY_POWER<a class="headerlink" href="#binary-power" title="Permalink to this headline">¶</a></h3>
+<p><strong>BINARY_POWER</strong> implements TOS = TOS1 ** TOS by making the call TOS.__pow__(TOS1).</p>
+</div>
+<div class="section" id="inplace-add">
+<h3>INPLACE_ADD<a class="headerlink" href="#inplace-add" title="Permalink to this headline">¶</a></h3>
+<p><strong>INPLACE_ADD</strong> implements in-place TOS = TOS1 + TOS. Exactly the same as BINARY_ADD by making the call TOS.__add__(TOS1).</p>
+</div>
+</div>
+<div class="section" id="load-and-store-instructions">
+<h2>Load and Store Instructions<a class="headerlink" href="#load-and-store-instructions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="binary-subscr">
+<h3>BINARY_SUBSCR<a class="headerlink" href="#binary-subscr" title="Permalink to this headline">¶</a></h3>
+<p><strong>BINARY_SUBSCR</strong> implements TOS=TOS1[TOS]. This instruction provides indexing into a list, tuple, or other object that supports subscripting. This is implemented as TOS1.__getitem__(TOS).</p>
+</div>
+<div class="section" id="delete-fast">
+<h3>DELETE_FAST<a class="headerlink" href="#delete-fast" title="Permalink to this headline">¶</a></h3>
+<p><strong>DELETE_FAST(var_num)</strong> does nothing in JCoCo which varies from the Python implementation. The purpose of this instruction seems to be implementation dependent. In the Python Virtual Machine it performs cleanup after an exception has occurred. The handling of exceptions is different in JCoCo so this instruction exists to make it work with the disassembler, but it is ignored.</p>
+</div>
+<div class="section" id="load-attr">
+<h3>LOAD_ATTR<a class="headerlink" href="#load-attr" title="Permalink to this headline">¶</a></h3>
+<p><strong>LOAD_ATTR(var_num)</strong>
+loads the attribute named at var_num in the globals from the object found at TOS. TOS is popped and the value that the attribute maps to is pushed onto the stack.</p>
+</div>
+<div class="section" id="load-closure">
+<h3>LOAD_CLOSURE<a class="headerlink" href="#load-closure" title="Permalink to this headline">¶</a></h3>
+<p><strong>LOAD_CLOSURE(i)</strong>
+pushes a reference to the cell contained in slot i of the cell and free variable storage. The name of the variable is co_cellvars[i] if i is less than the length of co_cellvars. Otherwise it is co_freevars[i-len(co_cellvars)].</p>
+</div>
+<div class="section" id="load-const">
+<h3>LOAD_CONST<a class="headerlink" href="#load-const" title="Permalink to this headline">¶</a></h3>
+<p><strong>LOAD_CONST(consti)</strong>
+pushes the constant found at index <em>consti</em> of the constants list of values onto the stack.</p>
+</div>
+<div class="section" id="load-deref">
+<h3>LOAD_DEREF<a class="headerlink" href="#load-deref" title="Permalink to this headline">¶</a></h3>
+<p><strong>LOAD_DEREF(i)</strong>
+loads the cell contained in slot i of the cell and free variable storage. Pushes a reference to the object the cell contains on the stack.</p>
+</div>
+<div class="section" id="load-fast">
+<h3>LOAD_FAST<a class="headerlink" href="#load-fast" title="Permalink to this headline">¶</a></h3>
+<p><strong>LOAD_FAST(var_num)</strong> pushes a reference to the local found at index <em>var_num</em> onto the stack.</p>
+</div>
+<div class="section" id="load-global">
+<h3>LOAD_GLOBAL<a class="headerlink" href="#load-global" title="Permalink to this headline">¶</a></h3>
+<p><strong>LOAD_GLOBAL(namei)</strong> loads the global named co_names[namei] onto the stack.</p>
+</div>
+<div class="section" id="load-name">
+<h3>LOAD_NAME<a class="headerlink" href="#load-name" title="Permalink to this headline">¶</a></h3>
+<p><strong>LOAD_NAME(var_num)</strong> loads a value from the locals dictionary that is named in the globals at <em>var_num</em>. It pushes the loaded value onto the stack. Preference should be given to using LOAD_FAST if possible.</p>
+</div>
+<div class="section" id="store-attr">
+<h3>STORE_ATTR<a class="headerlink" href="#store-attr" title="Permalink to this headline">¶</a></h3>
+<p><strong>STORE_ATTR(var_num)</strong> stores the object found at TOS1 in the object found at TOS in an attribute name found in the globals at var_num.</p>
+</div>
+<div class="section" id="store-deref">
+<h3>STORE_DEREF<a class="headerlink" href="#store-deref" title="Permalink to this headline">¶</a></h3>
+<p><strong>STORE_DEREF(i)</strong> stores TOS into the cell contained in slot i of the cell and free variable storage.</p>
+</div>
+<div class="section" id="store-fast">
+<h3>STORE_FAST<a class="headerlink" href="#store-fast" title="Permalink to this headline">¶</a></h3>
+<p><strong>STORE_FAST(var_num)</strong> stores TOS into the local co_varnames[var_num].</p>
+</div>
+<div class="section" id="store-locals">
+<h3>STORE_LOCALS<a class="headerlink" href="#store-locals" title="Permalink to this headline">¶</a></h3>
+<p><strong>STORE_LOCALS</strong>, used during class instantiation, pops the dictionary from TOS and uses it as the locals for the currently executing function, replacing any locals dictionary already in use. The new dictionary is the attributes of the class which includes methods to be instantiated upon object instantiation for objects of the class.</p>
+</div>
+<div class="section" id="store-name">
+<h3>STORE_NAME<a class="headerlink" href="#store-name" title="Permalink to this headline">¶</a></h3>
+<p><strong>STORE_NAME(var_num)</strong> uses the name found in the globals at <em>var_num</em> to store a named value in the locals dictionary.
+Preference should be given to STORE_FAST if possible.</p>
+</div>
+<div class="section" id="store-subscr">
+<h3>STORE_SUBSCR<a class="headerlink" href="#store-subscr" title="Permalink to this headline">¶</a></h3>
+<p><strong>STORE_SUBSCR</strong> implements TOS1[TOS]=TOS2. This instruction provides indexing into a list or other object that supports subscripting and is mutable. This instruction is implemented by calling TOS1.__setitem__(TOS,TOS2).</p>
+</div>
+</div>
+<div class="section" id="list-tuple-and-dictionary-instructions">
+<h2>List, Tuple, and Dictionary Instructions<a class="headerlink" href="#list-tuple-and-dictionary-instructions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="build-map">
+<h3>BUILD_MAP<a class="headerlink" href="#build-map" title="Permalink to this headline">¶</a></h3>
+<p><strong>BUILD_MAP(initial_capacity)</strong> creates an empty dictionary object and pushes it onto the stack. The initial capacity is ignored by JCoCo.</p>
+</div>
+<div class="section" id="store-map">
+<h3>STORE_MAP<a class="headerlink" href="#store-map" title="Permalink to this headline">¶</a></h3>
+<p><strong>STORE_MAP</strong> performs TOS2[TOS]=TOS1. TOS1 is the value to be stored at key TOS in dictionary TOS2.</p>
+</div>
+<div class="section" id="build-tuple">
+<h3>BUILD_TUPLE<a class="headerlink" href="#build-tuple" title="Permalink to this headline">¶</a></h3>
+<p><strong>BUILD_TUPLE(count)</strong> creates a tuple consuming count items from the stack, and pushes the resulting tuple onto the stack.</p>
+</div>
+<div class="section" id="select-tuple">
+<h3>SELECT_TUPLE<a class="headerlink" href="#select-tuple" title="Permalink to this headline">¶</a></h3>
+<p><strong>SELECT_TUPLE(count)</strong> pushes the contents of the tuple with count elements onto the operand stack. The count must match the tuple’s size or an illegal operation exception will be thrown. The elments of the tuple are pushed so the left-most element is left on the top of the stack. This instruction is not part of the Python Virtual Machine. It is JCoCo specific.</p>
+</div>
+<div class="section" id="build-list">
+<h3>BUILD_LIST<a class="headerlink" href="#build-list" title="Permalink to this headline">¶</a></h3>
+<p><strong>BUILD_LIST(count)</strong> works as BUILD_TUPLE, but creates a list.</p>
+</div>
+<div class="section" id="build-funlist">
+<h3>BUILD_FUNLIST<a class="headerlink" href="#build-funlist" title="Permalink to this headline">¶</a></h3>
+<p><strong>BUILD_FUNLIST</strong> works as BUILD_TUPLE, but creates a functional list (i.e. a funlist).</p>
+</div>
+<div class="section" id="select-funlist">
+<h3>SELECT_FUNLIST<a class="headerlink" href="#select-funlist" title="Permalink to this headline">¶</a></h3>
+<p><strong>SELECT_FUNLIST</strong>
+pushes the head and the tail of a funlist found at TOS onto the operand stack. The funlist found at TOS is popped from the stack. The head of the list is left on the top of the operand stack. The tail is below it on the stack. This instruction is JCoCo specific.</p>
+</div>
+<div class="section" id="cons-funlist">
+<h3>CONS_FUNLIST<a class="headerlink" href="#cons-funlist" title="Permalink to this headline">¶</a></h3>
+<p><strong>CONS_FUNLIST</strong> pops two elements from the operand stack. TOS should be a funlist and TOS-1 should be an element. The instruction create a new funlist from the two pieces with TOS-1 the head and TOS the tail of the new list. It pushes this new list onto the operand stack. This instruction is JCoCo specific.</p>
+</div>
+</div>
+<div class="section" id="class-creation-instructions">
+<h2>Class Creation Instructions<a class="headerlink" href="#class-creation-instructions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="load-build-class">
+<h3>LOAD_BUILD_CLASS<a class="headerlink" href="#load-build-class" title="Permalink to this headline">¶</a></h3>
+<p><strong>LOAD_BUILD_CLASS</strong> loads the built-in function for building classes onto the operand stack. This function, when called, takes two arguments. The name of the class must be at TOS. The function that will instantiate the class must be at TOS1. When called with CALL_FUNCTION, the built-in function for building classes will be at TOS2. The built-in function leaves the instantiated class on the top of the stack.</p>
+</div>
+</div>
+<div class="section" id="stack-manipulation-instructions">
+<h2>Stack Manipulation Instructions<a class="headerlink" href="#stack-manipulation-instructions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="pop-top">
+<h3>POP_TOP<a class="headerlink" href="#pop-top" title="Permalink to this headline">¶</a></h3>
+<p><strong>POP_TOP</strong> removes the top-of-stack (TOS) item.</p>
+</div>
+<div class="section" id="rot-two">
+<h3>ROT_TWO<a class="headerlink" href="#rot-two" title="Permalink to this headline">¶</a></h3>
+<p><strong>ROT_TWO</strong>
+swaps the two top-most stack items.</p>
+</div>
+<div class="section" id="dup-top">
+<h3>DUP_TOP<a class="headerlink" href="#dup-top" title="Permalink to this headline">¶</a></h3>
+<p><strong>DUP_TOP</strong> duplicates the reference on top of the stack.</p>
+</div>
+</div>
+<div class="section" id="conditional-and-iterative-execution-instructions">
+<h2>Conditional and Iterative Execution Instructions<a class="headerlink" href="#conditional-and-iterative-execution-instructions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="get-iter">
+<h3>GET_ITER<a class="headerlink" href="#get-iter" title="Permalink to this headline">¶</a></h3>
+<p><strong>GET_ITER</strong> implements TOS=iter(TOS).</p>
+</div>
+<div class="section" id="break-loop">
+<h3>BREAK_LOOP<a class="headerlink" href="#break-loop" title="Permalink to this headline">¶</a></h3>
+<p><strong>BREAK_LOOP</strong> terminates a loop due to a break statement.</p>
+</div>
+<div class="section" id="pop-block">
+<h3>POP_BLOCK<a class="headerlink" href="#pop-block" title="Permalink to this headline">¶</a></h3>
+<p><strong>POP_BLOCK</strong> removes one block from the block stack. Per frame, there is a stack of blocks, denoting nested loops, try statements, and such.</p>
+</div>
+<div class="section" id="pop-except">
+<h3>POP_EXCEPT<a class="headerlink" href="#pop-except" title="Permalink to this headline">¶</a></h3>
+<p><strong>POP_EXCEPT</strong> removes one block from the block stack. The popped block must be an exception handler block, as implicitly created when entering an except handler. In addition to popping extraneous values from the frame stack, the last three popped values are used to restore the exception state.</p>
+</div>
+<div class="section" id="end-finally">
+<h3>END_FINALLY<a class="headerlink" href="#end-finally" title="Permalink to this headline">¶</a></h3>
+<p><strong>END_FINALLY</strong> terminates a finally clause. The interpreter recalls whether the exception has to be re-raised, or whether the function returns, and continues with the outer-next block.</p>
+</div>
+<div class="section" id="compare-op">
+<h3>COMPARE_OP<a class="headerlink" href="#compare-op" title="Permalink to this headline">¶</a></h3>
+<p><strong>COMPARE_OP(opname)</strong> performs a Boolean operation. Both TOS1 and TOS are popped from the stack and the boolean result is left on the operand stack after the execution of this instruction. opname is an integer corresponding to the following comparisons.</p>
+<blockquote>
+<div><ul class="simple">
+<li>0 :TOS1 &lt; TOS or TOS1.__lt__(TOS)</li>
+<li>1 :TOS1 &lt;= TOS or TOS1.__le__(TOS)</li>
+<li>2 :TOS1 = TOS or TOS1.__eq__(TOS)</li>
+<li>3 :TOS1 != TOS or TOS1.__ne__(TOS)</li>
+<li>4 :TOS1 &gt; TOS or TOS1.__gt__(TOS)</li>
+<li>5 :TOS1 &gt;= TOS or TOS1.__ge__(TOS)</li>
+<li>6 :TOS contains TOS1 or TOS.__contains__(TOS1)</li>
+<li>7 :TOS1 not in TOS or TOS.__notin__(TOS1)</li>
+<li>8 :TOS1 is TOS or TOS.is__(TOS1)</li>
+<li>9 :TOS1 is not TOS or TOS.is_not(TOS1)</li>
+<li>10 : exception TOS1 matches TOS or TOS1.__excmatch__(TOS)</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="jump-forward">
+<h3>JUMP_FORWARD<a class="headerlink" href="#jump-forward" title="Permalink to this headline">¶</a></h3>
+<p><strong>JUMP_FORWARD(target)</strong> sets the Program Counter (i.e. PC) to target.</p>
+</div>
+<div class="section" id="pop-jump-if-true">
+<h3>POP_JUMP_IF_TRUE<a class="headerlink" href="#pop-jump-if-true" title="Permalink to this headline">¶</a></h3>
+<p><strong>POP_JUMP_IF_TRUE(target)</strong>
+checks TOS. If true it sets the Program Counter (i.e. PC) to target. TOS is popped.</p>
+</div>
+<div class="section" id="pop-jump-if-false">
+<h3>POP_JUMP_IF_FALSE<a class="headerlink" href="#pop-jump-if-false" title="Permalink to this headline">¶</a></h3>
+<p><strong>POP_JUMP_IF_FALSE(target)</strong> checks TOS. if TOS is false it sets the Program Counter (i.e. PC) to target. TOS is popped.</p>
+</div>
+<div class="section" id="jump-absolute">
+<h3>JUMP_ABSOLUTE<a class="headerlink" href="#jump-absolute" title="Permalink to this headline">¶</a></h3>
+<p><strong>JUMP_ABSOLUTE(target)</strong> sets the Program Counter (i.e. PC) to target.</p>
+</div>
+<div class="section" id="for-iter">
+<h3>FOR_ITER<a class="headerlink" href="#for-iter" title="Permalink to this headline">¶</a></h3>
+<p><strong>FOR_ITER(target)</strong> pops TOS and expects it to be an iterator. The instruction calls the iterators __next__() method. If this yields a new value, the iterator and the value are pushed on the stack (leaving the iterator below the value). If the iterator indicates it is exhausted the iterator remains popped, and the PC is set to target.</p>
+</div>
+<div class="section" id="setup-loop">
+<h3>SETUP_LOOP<a class="headerlink" href="#setup-loop" title="Permalink to this headline">¶</a></h3>
+<p><strong>SETUP_LOOP(target)</strong> pushes a block for a loop onto the block stack. The block spans from the current instruction to target.</p>
+</div>
+<div class="section" id="setup-except">
+<h3>SETUP_EXCEPT<a class="headerlink" href="#setup-except" title="Permalink to this headline">¶</a></h3>
+<p><strong>SETUP_EXCEPT(target)</strong> pushes a try block from a try-except clause onto the block stack. target points to the first except block.</p>
+</div>
+<div class="section" id="setup-finally">
+<h3>SETUP_FINALLY<a class="headerlink" href="#setup-finally" title="Permalink to this headline">¶</a></h3>
+<p><strong>SETUP_FINALLY(target)</strong> pushes a try block from a try-except clause onto the block stack. target points to the finally block.</p>
+</div>
+<div class="section" id="raise-varargs">
+<h3>RAISE_VARARGS<a class="headerlink" href="#raise-varargs" title="Permalink to this headline">¶</a></h3>
+<p><strong>RAISE_VARARGS(argc)</strong> varies from the Python version slightly. In JCoCo the argc must be one. This is because exceptions in JCoCo automatically contain the traceback which is not necessarily the case in the Python Virtual Machine. The argument on the stack should be an exception. The exception is thrown by this instruction.</p>
+</div>
+</div>
+<div class="section" id="function-execution-instructions">
+<h2>Function Execution Instructions<a class="headerlink" href="#function-execution-instructions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="return-value">
+<h3>RETURN_VALUE<a class="headerlink" href="#return-value" title="Permalink to this headline">¶</a></h3>
+<p><strong>RETURN_VALUE</strong> returns with TOS to the caller of the function.</p>
+</div>
+<div class="section" id="call-function">
+<h3>CALL_FUNCTION<a class="headerlink" href="#call-function" title="Permalink to this headline">¶</a></h3>
+<p><strong>CALL_FUNCTION(argc)</strong> calls a function. The low byte of argc indicates the number of positional parameters, the high byte the number of keyword parameters. On the stack, the opcode finds the keyword parameters first. For each keyword argument, the value is on top of the key. Below the keyword parameters, the positional parameters are on the stack, with the right-most parameter on top. Below the parameters, the function object to call is on the stack. Pops all function arguments, and the function itself off the stack, and pushes the return value.</p>
+</div>
+<div class="section" id="make-function">
+<h3>MAKE_FUNCTION<a class="headerlink" href="#make-function" title="Permalink to this headline">¶</a></h3>
+<p><strong>MAKE_FUNCTION(argc)</strong> pushes a new function object on the stack. TOS is the code associated with the function. The function object is defined to have argc default parameters, which are found below TOS.</p>
+</div>
+<div class="section" id="make-closure">
+<h3>MAKE_CLOSURE<a class="headerlink" href="#make-closure" title="Permalink to this headline">¶</a></h3>
+<p><strong>MAKE_CLOSURE(argc)</strong>
+creates a new function object, sets its __closure__ slot, and pushes it on the stack. TOS is the code associated with the function, TOS1 the tuple containing cells for the closure’s free variables. The function also has argc default parameters, which are found below the cells.</p>
+</div>
+</div>
+<div class="section" id="special-instructions">
+<h2>Special Instructions<a class="headerlink" href="#special-instructions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="break-point">
+<h3>BREAK_POINT<a class="headerlink" href="#break-point" title="Permalink to this headline">¶</a></h3>
+<p><strong>BREAK_POINT</strong> drops you into the interactive debugger.</p>
+</div>
+</div>
+</div>
+<div class="section" id="acknowledgements">
+<h1>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this headline">¶</a></h1>
+<p>I would like to thank Jonathan Opdahl for his work in prototyping this Java version of the CoCo virtual machine. Thank you, Jon, for your work and interest in working with me to solve some of the design challenges we came up against and for your hard work in converting a significant portion of this virtual machine from C++ to Java.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">The JCoCo Virtual Machine</a></li>
+<li><a class="reference internal" href="#download">Download</a></li>
+<li><a class="reference internal" href="#overview-of-the-virtual-machine">Overview of the Virtual Machine</a></li>
+<li><a class="reference internal" href="#usage">Usage</a><ul>
+<li><a class="reference internal" href="#example">Example</a></li>
+<li><a class="reference internal" href="#a-more-complex-example">A More Complex Example</a></li>
+<li><a class="reference internal" href="#example-of-classes-and-inheritance">Example of Classes and Inheritance</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#turtle-graphics">Turtle Graphics</a></li>
+<li><a class="reference internal" href="#assembly-program-syntax">Assembly Program Syntax</a></li>
+<li><a class="reference internal" href="#types">Types</a></li>
+<li><a class="reference internal" href="#methods">Methods</a><ul>
+<li><a class="reference internal" href="#magic-methods">Magic Methods</a></li>
+<li><a class="reference internal" href="#other-methods">Other Methods</a><ul>
+<li><a class="reference internal" href="#dictionaries">Dictionaries</a></li>
+<li><a class="reference internal" href="#files">Files</a></li>
+<li><a class="reference internal" href="#funlists">FunLists</a></li>
+<li><a class="reference internal" href="#lists">Lists</a></li>
+<li><a class="reference internal" href="#strings">Strings</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#global-built-ins">Global Built-Ins</a></li>
+<li><a class="reference internal" href="#virtual-machine-instructions">Virtual Machine Instructions</a><ul>
+<li><a class="reference internal" href="#arithmetic-instructions">Arithmetic Instructions</a><ul>
+<li><a class="reference internal" href="#binary-add">BINARY_ADD</a></li>
+<li><a class="reference internal" href="#binary-subtract">BINARY_SUBTRACT</a></li>
+<li><a class="reference internal" href="#binary-multiply">BINARY_MULTIPLY</a></li>
+<li><a class="reference internal" href="#binary-modulo">BINARY_MODULO</a></li>
+<li><a class="reference internal" href="#binary-floor-divide">BINARY_FLOOR_DIVIDE</a></li>
+<li><a class="reference internal" href="#binary-true-divide">BINARY_TRUE_DIVIDE</a></li>
+<li><a class="reference internal" href="#binary-power">BINARY_POWER</a></li>
+<li><a class="reference internal" href="#inplace-add">INPLACE_ADD</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#load-and-store-instructions">Load and Store Instructions</a><ul>
+<li><a class="reference internal" href="#binary-subscr">BINARY_SUBSCR</a></li>
+<li><a class="reference internal" href="#delete-fast">DELETE_FAST</a></li>
+<li><a class="reference internal" href="#load-attr">LOAD_ATTR</a></li>
+<li><a class="reference internal" href="#load-closure">LOAD_CLOSURE</a></li>
+<li><a class="reference internal" href="#load-const">LOAD_CONST</a></li>
+<li><a class="reference internal" href="#load-deref">LOAD_DEREF</a></li>
+<li><a class="reference internal" href="#load-fast">LOAD_FAST</a></li>
+<li><a class="reference internal" href="#load-global">LOAD_GLOBAL</a></li>
+<li><a class="reference internal" href="#load-name">LOAD_NAME</a></li>
+<li><a class="reference internal" href="#store-attr">STORE_ATTR</a></li>
+<li><a class="reference internal" href="#store-deref">STORE_DEREF</a></li>
+<li><a class="reference internal" href="#store-fast">STORE_FAST</a></li>
+<li><a class="reference internal" href="#store-locals">STORE_LOCALS</a></li>
+<li><a class="reference internal" href="#store-name">STORE_NAME</a></li>
+<li><a class="reference internal" href="#store-subscr">STORE_SUBSCR</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#list-tuple-and-dictionary-instructions">List, Tuple, and Dictionary Instructions</a><ul>
+<li><a class="reference internal" href="#build-map">BUILD_MAP</a></li>
+<li><a class="reference internal" href="#store-map">STORE_MAP</a></li>
+<li><a class="reference internal" href="#build-tuple">BUILD_TUPLE</a></li>
+<li><a class="reference internal" href="#select-tuple">SELECT_TUPLE</a></li>
+<li><a class="reference internal" href="#build-list">BUILD_LIST</a></li>
+<li><a class="reference internal" href="#build-funlist">BUILD_FUNLIST</a></li>
+<li><a class="reference internal" href="#select-funlist">SELECT_FUNLIST</a></li>
+<li><a class="reference internal" href="#cons-funlist">CONS_FUNLIST</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#class-creation-instructions">Class Creation Instructions</a><ul>
+<li><a class="reference internal" href="#load-build-class">LOAD_BUILD_CLASS</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#stack-manipulation-instructions">Stack Manipulation Instructions</a><ul>
+<li><a class="reference internal" href="#pop-top">POP_TOP</a></li>
+<li><a class="reference internal" href="#rot-two">ROT_TWO</a></li>
+<li><a class="reference internal" href="#dup-top">DUP_TOP</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#conditional-and-iterative-execution-instructions">Conditional and Iterative Execution Instructions</a><ul>
+<li><a class="reference internal" href="#get-iter">GET_ITER</a></li>
+<li><a class="reference internal" href="#break-loop">BREAK_LOOP</a></li>
+<li><a class="reference internal" href="#pop-block">POP_BLOCK</a></li>
+<li><a class="reference internal" href="#pop-except">POP_EXCEPT</a></li>
+<li><a class="reference internal" href="#end-finally">END_FINALLY</a></li>
+<li><a class="reference internal" href="#compare-op">COMPARE_OP</a></li>
+<li><a class="reference internal" href="#jump-forward">JUMP_FORWARD</a></li>
+<li><a class="reference internal" href="#pop-jump-if-true">POP_JUMP_IF_TRUE</a></li>
+<li><a class="reference internal" href="#pop-jump-if-false">POP_JUMP_IF_FALSE</a></li>
+<li><a class="reference internal" href="#jump-absolute">JUMP_ABSOLUTE</a></li>
+<li><a class="reference internal" href="#for-iter">FOR_ITER</a></li>
+<li><a class="reference internal" href="#setup-loop">SETUP_LOOP</a></li>
+<li><a class="reference internal" href="#setup-except">SETUP_EXCEPT</a></li>
+<li><a class="reference internal" href="#setup-finally">SETUP_FINALLY</a></li>
+<li><a class="reference internal" href="#raise-varargs">RAISE_VARARGS</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#function-execution-instructions">Function Execution Instructions</a><ul>
+<li><a class="reference internal" href="#return-value">RETURN_VALUE</a></li>
+<li><a class="reference internal" href="#call-function">CALL_FUNCTION</a></li>
+<li><a class="reference internal" href="#make-function">MAKE_FUNCTION</a></li>
+<li><a class="reference internal" href="#make-closure">MAKE_CLOSURE</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#special-instructions">Special Instructions</a><ul>
+<li><a class="reference internal" href="#break-point">BREAK_POINT</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#acknowledgements">Acknowledgements</a></li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="#">The JCoCo Virtual Machine 1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Kent D. Lee.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.
+    </div>
+  </body>
+</html>

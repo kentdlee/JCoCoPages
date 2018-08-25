@@ -1,0 +1,4 @@
+#!/bin/bash
+rm jcoco.zip
+cp ~/Dropbox/Projects/JCoCo/JCoCo/dist/JCoCo.jar .
+zip jcoco.zip coco JCoCo.jar
