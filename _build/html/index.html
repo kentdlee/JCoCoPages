@@ -9,10 +9,13 @@
     <title>The JCoCo Virtual Machine &#8212; The JCoCo Virtual Machine 1.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
   </head><body>
@@ -37,17 +40,19 @@
 <p>[This virtual machine was implemented in Java. Another version of this project called just CoCo, was written in C++. You can find documentation on the C++ version at <a class="reference external" href="http://cs.luther.edu/CoCo">http://cs.luther.edu/CoCo</a>. JCoCo is backwards compatible with CoCo.]</p>
 <p>JCoCo was designed for educational purposes for learning Java, assembly language, and higher level language implementation. However, JCoCo is a full-fleged virtual machine supporting function definition, higher order functional programming, classes, object instantiation, inheritance, and polymporphism. Source code for a reduced functionality JCoCo is available on GitHub free of charge. You may download it by cloning the github repository or by downloading a zip file of the source. A full implementation jar file is available in the next section.</p>
 </div>
-<div class="section" id="download">
-<h1>Download<a class="headerlink" href="#download" title="Permalink to this headline">¶</a></h1>
-<p>You can be up and running the JCoCo virtual machine in minutes. Download <a class="reference download internal" href="_downloads/jcoco.zip" download=""><code class="xref download docutils literal notranslate"><span class="pre">the</span> <span class="pre">JCoCo</span> <span class="pre">zip</span> <span class="pre">file</span></code></a> and unzip it in your bin directory or some place in your path. That’s it. You should then be able to run coco by typing <em>coco</em> at a command prompt. You must have Java installed to run this program, but most systems do have Java these days. If yours does not, you can <a class="reference external" href="https://www.java.com/">download Java here</a>.</p>
-<p>You may also want the Python disassembler. This will let you disassemble many Python programs to the assembly language format needed by the JCoCo virtual machine. You can <a class="reference download internal" href="_downloads/disassembler.py" download=""><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">the</span> <span class="pre">disassembler</span> <span class="pre">by</span> <span class="pre">clicking</span> <span class="pre">here</span></code></a>. You must have Python 3.2 installed on your system to run this disassembler. You can determine if you have Python 3.2 by opening up a terminal windows and typing <em>python3.2</em>. If the program is installed, and it is in your path, it should run. If not, you can download the appropriate file below and install it on your system.</p>
+<div class="section" id="download-source-code">
+<h1>Download &amp; Source Code<a class="headerlink" href="#download-source-code" title="Permalink to this headline">¶</a></h1>
+<p>You can be up and running the JCoCo virtual machine in minutes. Download <a class="reference download internal" download="" href="_downloads/dd2e5c2a4cc41a6986d4bb34c6d3161c/jcoco.zip"><code class="xref download docutils literal notranslate"><span class="pre">the</span> <span class="pre">JCoCo</span> <span class="pre">zip</span> <span class="pre">file</span></code></a> and unzip it in your bin directory or some place in your path. That’s it. You should then be able to run coco by typing <em>coco</em> at a command prompt. You must have Java installed to run this program, but most systems do have Java these days. If yours does not, you can <a class="reference external" href="https://www.java.com/">download Java here</a>.</p>
+<p>You can access the source code for most of the virtual machine at <a class="reference external" href="http://github.com/kentdlee/JCoCo">http://github.com/kentdlee/JCoCo</a>. The full version of the source code
+is hidden from students to allow them to extend it as a project. Full source code access can be granted on github upon request from non-students.</p>
+<p>You may also want the Python disassembler. This will let you disassemble many Python programs to the assembly language format needed by the JCoCo virtual machine. You can <a class="reference download internal" download="" href="_downloads/a13a30e207b9a2b1350f4a8d946cb921/disassembler.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">the</span> <span class="pre">disassembler</span> <span class="pre">by</span> <span class="pre">clicking</span> <span class="pre">here</span></code></a>. You must have Python 3.2 installed on your system to run this disassembler. You can determine if you have Python 3.2 by opening up a terminal windows and typing <em>python3.2</em>. If the program is installed, and it is in your path, it should run. If not, you can download the appropriate file below and install it on your system.</p>
 <blockquote>
 <div><ul class="simple">
-<li><a class="reference download internal" href="_downloads/python-3.2.5-macosx10.3.dmg" download=""><code class="xref download docutils literal notranslate"><span class="pre">python-3.2.5-macosx10.3.dmg</span></code></a> - For Mac OS X 10.3 and later.</li>
-<li><a class="reference download internal" href="_downloads/python-3.2.5-macosx10.6.dmg" download=""><code class="xref download docutils literal notranslate"><span class="pre">python-3.2.5-macosx10.6.dmg</span></code></a> - For Mac OS X 10.6 and later.</li>
-<li><a class="reference download internal" href="_downloads/python-3.2.5.amd64.msi" download=""><code class="xref download docutils literal notranslate"><span class="pre">python-3.2.5.amd64.msi</span></code></a> - For 64-bit Microsoft Windows.</li>
-<li><a class="reference download internal" href="_downloads/python-3.2.5.msi" download=""><code class="xref download docutils literal notranslate"><span class="pre">python-3.2.5.msi</span></code></a> - For 32-bit Microsoft Windows.</li>
-<li><a class="reference download internal" href="_downloads/Python-3.2.6.tgz" download=""><code class="xref download docutils literal notranslate"><span class="pre">Python-3.2.6.tgz</span></code></a> - Source code which can be compiled and used to install Python 3.2 if you have a C compiler.</li>
+<li><a class="reference download internal" download="" href="_downloads/6186dd3eb0f7dba6f87115a76463d7d5/python-3.2.5-macosx10.3.dmg"><code class="xref download docutils literal notranslate"><span class="pre">python-3.2.5-macosx10.3.dmg</span></code></a> - For Mac OS X 10.3 and later.</li>
+<li><a class="reference download internal" download="" href="_downloads/8316476535d968d1cd337ffba65c682d/python-3.2.5-macosx10.6.dmg"><code class="xref download docutils literal notranslate"><span class="pre">python-3.2.5-macosx10.6.dmg</span></code></a> - For Mac OS X 10.6 and later.</li>
+<li><a class="reference download internal" download="" href="_downloads/8696666c4d576bc3c3a2b210eb5a81f9/python-3.2.5.amd64.msi"><code class="xref download docutils literal notranslate"><span class="pre">python-3.2.5.amd64.msi</span></code></a> - For 64-bit Microsoft Windows.</li>
+<li><a class="reference download internal" download="" href="_downloads/683002eac781db9cf6b7f0be7ce0b2b6/python-3.2.5.msi"><code class="xref download docutils literal notranslate"><span class="pre">python-3.2.5.msi</span></code></a> - For 32-bit Microsoft Windows.</li>
+<li><a class="reference download internal" download="" href="_downloads/f2a5ce3e0b1b61589ede45d187181429/Python-3.2.6.tgz"><code class="xref download docutils literal notranslate"><span class="pre">Python-3.2.6.tgz</span></code></a> - Source code which can be compiled and used to install Python 3.2 if you have a C compiler.</li>
 </ul>
 </div></blockquote>
 <p>Read below for how to use the disassembler and for what it can and cannot do.</p>
@@ -72,7 +77,7 @@
 <p>JCoCo is a full-fledged virtual machine. It reads a source file in JCoCo assembly format and interprets the instructions. JCoCo is a interpreter for Python assembly language instructions. In addition, included with JCoCo is a Python disassembler that diassembles Python programs into JCoCo format. With these two tools together you can learn a lot about not only the syntax of casm files (the extension understood as CoCo assembly language) but also the Python language itself. Two examples below describe the usage of JCoCo and the associated disassembler.</p>
 <div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<p>Consider the following Python program. The disassembler is a module found in the tests subdirectory of the source code distribution or you can <a class="reference download internal" href="_downloads/disassembler.py" download=""><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">it</span> <span class="pre">here</span></code></a>. To disassemble correctly, Python programs must contain a series of functions including a main function. The disassembler is imported at the top. Instead of calling the main function, the disassemble function of the same module is called on each function.</p>
+<p>Consider the following Python program. The disassembler is a module found in the tests subdirectory of the source code distribution or you can <a class="reference download internal" download="" href="_downloads/a13a30e207b9a2b1350f4a8d946cb921/disassembler.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">it</span> <span class="pre">here</span></code></a>. To disassemble correctly, Python programs must contain a series of functions including a main function. The disassembler is imported at the top. Instead of calling the main function, the disassemble function of the same module is called on each function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">disassembler</span>
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
@@ -1088,10 +1093,10 @@ creates a new function object, sets its __closure__ slot, and pushes it on the s
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="#">Table Of Contents</a></h3>
+  <h3><a href="#">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">The JCoCo Virtual Machine</a></li>
-<li><a class="reference internal" href="#download">Download</a></li>
+<li><a class="reference internal" href="#download-source-code">Download &amp; Source Code</a></li>
 <li><a class="reference internal" href="#overview-of-the-virtual-machine">Overview of the Virtual Machine</a></li>
 <li><a class="reference internal" href="#usage">Usage</a><ul>
 <li><a class="reference internal" href="#example">Example</a></li>
@@ -1234,7 +1239,7 @@ creates a new function object, sets its __closure__ slot, and pushes it on the s
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Kent D. Lee.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
     </div>
   </body>
 </html>

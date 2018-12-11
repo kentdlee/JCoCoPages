@@ -13,9 +13,12 @@ JCoCo is a virtual machine, based on the Python 3.2 virtual machine. The JCoCo v
 JCoCo was designed for educational purposes for learning Java, assembly language, and higher level language implementation. However, JCoCo is a full-fleged virtual machine supporting function definition, higher order functional programming, classes, object instantiation, inheritance, and polymporphism. Source code for a reduced functionality JCoCo is available on GitHub free of charge. You may download it by cloning the github repository or by downloading a zip file of the source. A full implementation jar file is available in the next section.
 
 
-Download
-====================
+Download & Source Code
+========================
 You can be up and running the JCoCo virtual machine in minutes. Download :download:`the JCoCo zip file <jcoco.zip>` and unzip it in your bin directory or some place in your path. That's it. You should then be able to run coco by typing *coco* at a command prompt. You must have Java installed to run this program, but most systems do have Java these days. If yours does not, you can `download Java here <https://www.java.com/>`_.
+
+You can access the source code for most of the virtual machine at `http://github.com/kentdlee/JCoCo <http://github.com/kentdlee/JCoCo>`_. The full version of the source code
+is hidden from students to allow them to extend it as a project. Full source code access can be granted on github upon request from non-students.
 
 You may also want the Python disassembler. This will let you disassemble many Python programs to the assembly language format needed by the JCoCo virtual machine. You can :download:`download the disassembler by clicking here <disassembler.py>`. You must have Python 3.2 installed on your system to run this disassembler. You can determine if you have Python 3.2 by opening up a terminal windows and typing *python3.2*. If the program is installed, and it is in your path, it should run. If not, you can download the appropriate file below and install it on your system.
 
